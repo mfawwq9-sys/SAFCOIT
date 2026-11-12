@@ -1,0 +1,1617 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>الأمانة الاجتماعية | منصة الرسائل السرية</title>
+
+    <!-- خطوط جوجل العربية (Cairo & Tajawal) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- مكتبة Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- مكتبة أيقونات Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- مكتبة html2canvas لتصدير بطاقة الرسالة كصورة حقيقية -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <!-- إعدادات ألوان وخطوط Tailwind -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              cairo: ["Cairo", "sans-serif"],
+              tajawal: ["Tajawal", "sans-serif"],
+            },
+            colors: {
+              brand: {
+                dark: "#090714",
+                card: "#131026",
+                purple: "#2e1065",
+                violet: "#6d28d9",
+                cyan: "#38bdf8",
+                glow: "#0ea5e9",
+              },
+            },
+            animation: {
+              "pulse-slow": "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+              float: "float 6s ease-in-out infinite",
+            },
+            keyframes: {
+              float: {
+                "0%, 100%": { transform: "translateY(0)" },
+                "50%": { transform: "translateY(-8px)" },
+              },
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      body {
+        font-family: "Cairo", sans-serif;
+        background-color: #090714;
+        background-image:
+          radial-gradient(
+            circle at 15% 15%,
+            rgba(109, 40, 217, 0.18) 0%,
+            transparent 45%
+          ),
+          radial-gradient(
+            circle at 85% 80%,
+            rgba(56, 189, 248, 0.14) 0%,
+            transparent 45%
+          ),
+          radial-gradient(
+            circle at 50% 50%,
+            rgba(30, 27, 75, 0.4) 0%,
+            transparent 70%
+          );
+        min-height: 100vh;
+        color: #f8fafc;
+        overflow-x: hidden;
+      }
+
+      /* تأثير الزجاج المصنفر Glassmorphism */
+      .glass-panel {
+        background: rgba(19, 16, 38, 0.72);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(139, 92, 246, 0.22);
+        box-shadow:
+          0 20px 50px rgba(0, 0, 0, 0.5),
+          inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      }
+
+      .glass-card {
+        background: rgba(26, 22, 51, 0.65);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(56, 189, 248, 0.15);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .glass-card:hover {
+        border-color: rgba(56, 189, 248, 0.45);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px -10px rgba(56, 189, 248, 0.2);
+      }
+
+      /* شريط التمرير المخصص */
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #090714;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #4c1d95;
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #38bdf8;
+      }
+
+      /* حركات الإرسال */
+      @keyframes sendFly {
+        0% {
+          transform: translate(0, 0) scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: translate(-15px, -15px) scale(1.1);
+          opacity: 0.8;
+        }
+        100% {
+          transform: translate(-40px, -40px) scale(0);
+          opacity: 0;
+        }
+      }
+      .animate-send {
+        animation: sendFly 0.6s ease-in forwards;
+      }
+    </style>
+  </head>
+  <body class="antialiased selection:bg-brand-cyan selection:text-brand-dark">
+    <!-- خلفية شبكية تقنية خفيفة -->
+    <div
+      class="fixed inset-0 pointer-events-none opacity-20 z-0"
+      style="
+        background-image: radial-gradient(#38bdf8 0.75px, transparent 0.75px);
+        background-size: 28px 28px;
+      "
+    ></div>
+
+    <!-- الحاوية الرئيسية -->
+    <div
+      class="relative z-10 max-w-4xl mx-auto px-4 py-6 sm:py-10 flex flex-col min-h-screen justify-between"
+    >
+      <!-- الشريط العلوي (يظهر بشكل مبسط للزوار، وأزرار التحكم تظهر فقط في وضع الإدارة) -->
+      <header
+        class="flex items-center justify-center sm:justify-between gap-4 mb-6"
+      >
+        <div class="flex items-center gap-2">
+          <span
+            class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-brand-violet/30 text-brand-cyan border border-brand-cyan/30 shadow-sm"
+          >
+            <span
+              class="w-2 h-2 rounded-full bg-brand-cyan animate-ping"
+            ></span>
+            منصة صارحني • التواصل السري الآمن
+          </span>
+        </div>
+
+        <!-- شريط التنقل الخاص بالأمين (مخفي تماماً عن الزوار العاديين) -->
+        <nav
+          id="adminTopNav"
+          class="hidden glass-panel p-1.5 rounded-2xl flex items-center gap-1.5"
+        >
+          <button
+            id="navStudentBtn"
+            onclick="exitAdminMode()"
+            class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-white/5 transition-all"
+          >
+            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+            <span>واجهة الزوار</span>
+          </button>
+          <div
+            class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-l from-violet-600 to-indigo-600 text-white shadow-lg shadow-violet-600/30"
+          >
+            <i
+              data-lucide="shield-check"
+              class="w-3.5 h-3.5 text-brand-cyan"
+            ></i>
+            <span>بوابة الأمين</span>
+            <span
+              id="unreadBadge"
+              class="hidden bg-brand-cyan text-brand-dark text-[10px] font-extrabold px-1.5 py-0.2 rounded-full"
+              >0</span
+            >
+          </div>
+        </nav>
+      </header>
+
+      <!-- ========================================================= -->
+      <!-- 1. واجهة الإرسال للطلاب (Student Anonymous Send View)      -->
+      <!-- ========================================================= -->
+      <main
+        id="studentView"
+        class="w-full max-w-xl mx-auto my-auto transition-all duration-300"
+      >
+        <div
+          class="glass-panel rounded-3xl p-6 sm:p-8 relative overflow-hidden"
+        >
+          <!-- إضاءة علوية ديكورية -->
+          <div
+            class="absolute -top-24 left-1/2 -translate-x-1/2 w-64 h-48 bg-violet-600/30 rounded-full blur-3xl pointer-events-none"
+          ></div>
+
+          <!-- قسم الشعار والهوية (النقر المزدوج يفتح بوابة الإدارة سراً) -->
+          <div class="flex flex-col items-center text-center mb-6 relative">
+            <div
+              id="secretLogoTrigger"
+              ondblclick="enterAdminMode()"
+              title="الأمانة الاجتماعية"
+              class="w-28 h-28 sm:w-32 sm:h-32 mb-4 animate-float cursor-pointer select-none drop-shadow-[0_0_20px_rgba(56,189,248,0.35)]"
+            >
+              <svg
+                viewBox="0 0 200 200"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-full h-full"
+              >
+                <defs>
+                  <linearGradient
+                    id="bgGrad"
+                    x1="0"
+                    y1="0"
+                    x2="200"
+                    y2="200"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop offset="0%" stop-color="#3b1d7a" />
+                    <stop offset="100%" stop-color="#170d36" />
+                  </linearGradient>
+                  <linearGradient
+                    id="ringGrad"
+                    x1="20"
+                    y1="20"
+                    x2="180"
+                    y2="180"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop offset="0%" stop-color="#38bdf8" />
+                    <stop offset="50%" stop-color="#a855f7" />
+                    <stop offset="100%" stop-color="#38bdf8" />
+                  </linearGradient>
+                  <filter
+                    id="glow"
+                    x="-20%"
+                    y="-20%"
+                    width="140%"
+                    height="140%"
+                  >
+                    <feGaussianBlur stdDeviation="3" result="blur" />
+                    <feComposite
+                      in="SourceGraphic"
+                      in2="blur"
+                      operator="over"
+                    />
+                  </filter>
+                </defs>
+
+                <!-- الإطار الدائري الخارجي -->
+                <circle
+                  cx="100"
+                  cy="100"
+                  r="92"
+                  fill="url(#bgGrad)"
+                  stroke="url(#ringGrad)"
+                  stroke-width="3.5"
+                />
+                <circle
+                  cx="100"
+                  cy="100"
+                  r="82"
+                  stroke="#38bdf8"
+                  stroke-opacity="0.25"
+                  stroke-width="1"
+                  stroke-dasharray="4 4"
+                />
+
+                <!-- شبكة حاسوبية وعقد مضيئة حول المركز -->
+                <g stroke="#38bdf8" stroke-width="1.5" stroke-opacity="0.65">
+                  <!-- خطوط الشبكة -->
+                  <line x1="100" y1="22" x2="100" y2="48" />
+                  <line x1="100" y1="152" x2="100" y2="178" />
+                  <line x1="22" y1="100" x2="48" y2="100" />
+                  <line x1="152" y1="100" x2="178" y2="100" />
+                  <line x1="45" y1="45" x2="65" y2="65" />
+                  <line x1="135" y1="135" x2="155" y2="155" />
+                  <line x1="155" y1="45" x2="135" y2="65" />
+                  <line x1="65" y1="135" x2="45" y2="155" />
+
+                  <!-- مسارات دوائر إلكترونية -->
+                  <path d="M72 30 L85 45 L85 55" fill="none" />
+                  <path d="M128 30 L115 45 L115 55" fill="none" />
+                  <path d="M30 72 L45 85 L55 85" fill="none" />
+                  <path d="M170 72 L155 85 L145 85" fill="none" />
+                  <path d="M30 128 L45 115 L55 115" fill="none" />
+                  <path d="M170 128 L155 115 L145 115" fill="none" />
+                </g>
+
+                <!-- العقد المضيئة (Nodes) -->
+                <g fill="#ffffff" filter="url(#glow)">
+                  <circle cx="100" cy="22" r="4" />
+                  <circle cx="100" cy="178" r="4" />
+                  <circle cx="22" cy="100" r="4" />
+                  <circle cx="178" cy="100" r="4" />
+                  <circle cx="45" cy="45" r="3.5" fill="#38bdf8" />
+                  <circle cx="155" cy="155" r="3.5" fill="#38bdf8" />
+                  <circle cx="155" cy="45" r="3.5" fill="#38bdf8" />
+                  <circle cx="45" cy="155" r="3.5" fill="#38bdf8" />
+                  <circle cx="72" cy="30" r="2.5" />
+                  <circle cx="128" cy="30" r="2.5" />
+                  <circle cx="30" cy="72" r="2.5" />
+                  <circle cx="170" cy="72" r="2.5" />
+                  <circle cx="30" cy="128" r="2.5" />
+                  <circle cx="170" cy="128" r="2.5" />
+                </g>
+
+                <!-- أيقونة الأيدي المتصافحة في المنتصف -->
+                <g
+                  transform="translate(52, 62)"
+                  stroke="#38bdf8"
+                  stroke-width="3.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  fill="none"
+                  filter="url(#glow)"
+                >
+                  <!-- اليد اليسرى واليمنى متصافحتان -->
+                  <path
+                    d="M12 34 L26 20 C31 15 39 15 44 20 L48 24 L56 16 C61 11 69 11 74 16 L84 26"
+                  />
+                  <path
+                    d="M18 42 L34 58 C38 62 44 62 48 58 L68 38 C72 34 72 28 68 24 L58 14"
+                  />
+                  <path
+                    d="M48 24 L38 34 C35 37 35 41 38 44 C41 47 45 47 48 44 L58 34"
+                  />
+                  <!-- خطوط الأصابع -->
+                  <path d="M26 50 L32 44" />
+                  <path d="M32 56 L38 50" />
+                  <path d="M38 61 L44 55" />
+                  <!-- أكمام -->
+                  <path
+                    d="M6 28 L18 40 L10 48 L-2 36 Z"
+                    fill="#1e1b4b"
+                    stroke="#ffffff"
+                    stroke-width="2.5"
+                  />
+                  <path
+                    d="M90 28 L78 40 L86 48 L98 36 Z"
+                    fill="#1e1b4b"
+                    stroke="#ffffff"
+                    stroke-width="2.5"
+                  />
+                </g>
+              </svg>
+            </div>
+
+            <h2
+              class="text-xs sm:text-sm font-bold tracking-wide text-brand-cyan uppercase mb-1"
+            >
+              جمعية دبلوم علوم حاسوب وتقانة المعلومات
+            </h2>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-white mb-2">
+              الأمانة الاجتماعية
+            </h1>
+            <div
+              class="w-24 h-1 bg-gradient-to-r from-transparent via-brand-cyan to-transparent rounded-full mb-3"
+            ></div>
+            <p
+              class="text-slate-300 text-sm sm:text-base max-w-md leading-relaxed"
+            >
+              اجعل رسالتك بنّاءة.. اكتب رأيك، مقترحك، أو رسالتك بسرية تامة لن
+              يعرف أحد هويتك 🔒
+            </p>
+          </div>
+
+          <!-- نموذج الإرسال -->
+          <div id="sendFormContainer">
+            <!-- اختيار شعور / إيموجي سريع -->
+            <div class="mb-4">
+              <div class="flex items-center justify-between mb-2">
+                <label class="text-xs text-slate-400 font-medium"
+                  >اختر انطباعك أو أضف تعبيراً (اختياري):</label
+                >
+                <button
+                  type="button"
+                  onclick="clearMessageInput()"
+                  id="clearTextBtn"
+                  class="hidden text-[11px] text-rose-400 hover:text-rose-300 flex items-center gap-1 transition-all"
+                >
+                  <i data-lucide="eraser" class="w-3 h-3"></i>
+                  <span>مسح النص</span>
+                </button>
+              </div>
+              <div
+                class="flex items-center justify-between gap-2 bg-brand-dark/60 p-2 rounded-2xl border border-white/5"
+                id="moodSelector"
+              >
+                <button
+                  type="button"
+                  onclick="selectMood(this, '💡')"
+                  class="mood-btn flex-1 py-2 rounded-xl text-xl hover:bg-white/10 transition-all border border-transparent"
+                  title="فكرة أو مقترح"
+                >
+                  💡
+                </button>
+                <button
+                  type="button"
+                  onclick="selectMood(this, '🤝')"
+                  class="mood-btn flex-1 py-2 rounded-xl text-xl hover:bg-white/10 transition-all border border-transparent"
+                  title="تعاون ودعم"
+                >
+                  🤝
+                </button>
+                <button
+                  type="button"
+                  onclick="selectMood(this, '❤️')"
+                  class="mood-btn flex-1 py-2 rounded-xl text-xl hover:bg-white/10 transition-all border border-transparent"
+                  title="رسالة تقدير"
+                >
+                  ❤️
+                </button>
+                <button
+                  type="button"
+                  onclick="selectMood(this, '🗣️')"
+                  class="mood-btn flex-1 py-2 rounded-xl text-xl hover:bg-white/10 transition-all border border-transparent"
+                  title="صراحة ومصارحة"
+                >
+                  🗣️
+                </button>
+                <button
+                  type="button"
+                  onclick="selectMood(this, '🎓')"
+                  class="mood-btn flex-1 py-2 rounded-xl text-xl hover:bg-white/10 transition-all border border-transparent"
+                  title="شأن طلابي"
+                >
+                  🎓
+                </button>
+              </div>
+            </div>
+
+            <!-- مربع النص -->
+            <div class="relative mb-3">
+              <textarea
+                id="messageInput"
+                maxlength="500"
+                rows="5"
+                placeholder="اكتب رسالتك هنا بكل حرية... هويتك مشفرة ومجهولة تماماً 🔒"
+                class="w-full bg-brand-dark/80 text-white placeholder-slate-500 rounded-2xl p-4 text-base leading-relaxed border border-violet-500/30 focus:border-brand-cyan focus:ring-2 focus:ring-brand-cyan/20 outline-none resize-none transition-all"
+              ></textarea>
+
+              <!-- عداد الأحرف -->
+              <div class="flex items-center justify-between mt-2 px-1 text-xs">
+                <span
+                  class="flex items-center gap-1.5 text-emerald-400 font-medium"
+                >
+                  <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+                  لا يتم تسجيل IP أو أي بيانات شخصية
+                </span>
+                <span id="charCounter" class="text-slate-400 font-mono"
+                  >0 / 500</span
+                >
+              </div>
+            </div>
+
+            <!-- رسالة تنبيه خطأ -->
+            <div
+              id="errorAlert"
+              class="hidden mb-3 p-3 rounded-xl bg-rose-500/15 border border-rose-500/40 text-rose-300 text-xs flex items-center gap-2"
+            >
+              <i data-lucide="alert-circle" class="w-4 h-4 shrink-0"></i>
+              <span id="errorText"
+                >الرجاء كتابة محتوى الرسالة قبل الإرسال.</span
+              >
+            </div>
+
+            <!-- زر الإرسال -->
+            <button
+              id="sendButton"
+              onclick="handleSendMessage()"
+              class="w-full py-3.5 px-6 rounded-2xl font-bold text-base text-white bg-gradient-to-l from-violet-600 via-indigo-600 to-sky-500 hover:brightness-110 active:scale-[0.99] transition-all shadow-lg shadow-violet-600/30 flex items-center justify-center gap-2.5 group"
+            >
+              <span id="sendBtnText">إرسال الرسالة بسرية تامة</span>
+              <i
+                id="sendIcon"
+                data-lucide="send"
+                class="w-5 h-5 group-hover:-translate-x-1 transition-transform"
+              ></i>
+            </button>
+          </div>
+
+          <!-- شاشة التأكيد بعد الإرسال -->
+          <div
+            id="successContainer"
+            class="hidden text-center py-6 animate-fadeIn"
+          >
+            <div
+              class="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center mx-auto mb-4"
+            >
+              <i data-lucide="check-circle-2" class="w-9 h-9"></i>
+            </div>
+            <h3 class="text-xl font-extrabold text-white mb-2">
+              تم إيصال رسالتك بسرية تامة!
+            </h3>
+            <p class="text-slate-300 text-sm mb-4">
+              شكراً لمساهمتك في صناعة الأثر وتطوير مجتمعنا الطلابي.
+            </p>
+            <div
+              class="inline-block bg-brand-dark/90 border border-brand-cyan/30 rounded-xl px-4 py-2 mb-6"
+            >
+              <span class="text-xs text-slate-400 block"
+                >الرقم المرجعي للرسالة</span
+              >
+              <span
+                id="refCodeDisplay"
+                class="font-mono font-bold text-brand-cyan text-base tracking-wider"
+                >#SOC-0000</span
+              >
+            </div>
+            <div>
+              <button
+                onclick="resetSendForm()"
+                class="px-6 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white text-sm font-bold transition-all border border-white/10"
+              >
+                إرسال رسالة أخرى
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- ========================================================= -->
+      <!-- 2. لوحة تحكم الأمين الاجتماعي (Admin Dashboard View)        -->
+      <!-- ========================================================= -->
+      <section id="adminView" class="hidden w-full transition-all duration-300">
+        <!-- شاشة قفل الدخول للأمين الاجتماعي -->
+        <div
+          id="adminLockScreen"
+          class="max-w-md mx-auto my-8 glass-panel rounded-3xl p-8 text-center"
+        >
+          <div
+            class="w-16 h-16 rounded-2xl bg-violet-600/20 border border-violet-500/40 text-brand-cyan flex items-center justify-center mx-auto mb-4"
+          >
+            <i data-lucide="key-round" class="w-8 h-8"></i>
+          </div>
+          <h2 class="text-2xl font-extrabold text-white mb-1">
+            بوابة الأمين الاجتماعي
+          </h2>
+          <p class="text-slate-400 text-sm mb-6">
+            الرجاء إدخال الرمز السري للوصول إلى صندوق الرسائل الواردة
+          </p>
+
+          <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+            <div>
+              <input
+                type="password"
+                id="adminPinInput"
+                placeholder="••••"
+                maxlength="10"
+                class="w-full text-center text-2xl tracking-[0.5em] font-mono bg-brand-dark/90 text-white rounded-2xl py-3.5 px-4 border border-violet-500/30 focus:border-brand-cyan outline-none"
+              />
+            </div>
+            <p
+              id="loginError"
+              class="hidden text-xs text-rose-400 font-semibold"
+            >
+              الرمز السري غير صحيح، حاول مرة أخرى.
+            </p>
+            <div class="flex gap-2">
+              <button
+                type="submit"
+                class="flex-1 py-3 rounded-2xl font-bold bg-gradient-to-l from-violet-600 to-sky-500 text-white shadow-lg shadow-violet-600/25 hover:brightness-110 transition-all"
+              >
+                فتح صندوق الوارد
+              </button>
+              <button
+                type="button"
+                onclick="exitAdminMode()"
+                class="px-4 py-3 rounded-2xl font-bold bg-white/5 hover:bg-white/10 text-slate-300 text-sm transition-all"
+              >
+                رجوع
+              </button>
+            </div>
+          </form>
+          <p class="mt-4 text-xs text-slate-500">
+            تلميح للتجربة: الرمز الافتراضي هو
+            <span class="text-brand-cyan font-mono font-bold">2026</span>
+          </p>
+        </div>
+
+        <!-- محتوى لوحة التحكم بعد تسجيل الدخول -->
+        <div id="adminDashboardContent" class="hidden space-y-6">
+          <!-- رأس لوحة التحكم -->
+          <div
+            class="glass-panel rounded-3xl p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+          >
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="text-xl sm:text-2xl font-extrabold text-white">
+                  صندوق وارد الأمانة الاجتماعية
+                </h2>
+                <span
+                  id="connectionBadge"
+                  class="px-2.5 py-0.5 text-xs rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
+                  >نشط</span
+                >
+              </div>
+              <p class="text-xs sm:text-sm text-slate-400 mt-1">
+                جمعية دبلوم علوم حاسوب وتقانة المعلومات
+              </p>
+            </div>
+            <div
+              class="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end"
+            >
+              <button
+                onclick="copyPublicSendLink()"
+                class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-brand-cyan/15 text-brand-cyan border border-brand-cyan/30 hover:bg-brand-cyan/25 text-xs font-bold transition-all"
+              >
+                <i data-lucide="share" class="w-4 h-4"></i>
+                <span>نسخ رابط الإرسال العام</span>
+              </button>
+              <button
+                onclick="logoutAdmin()"
+                class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-rose-500/15 text-rose-300 border border-rose-500/30 hover:bg-rose-500/25 text-xs font-bold transition-all"
+              >
+                <i data-lucide="log-out" class="w-4 h-4"></i>
+                <span>خروج</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- بطاقات الإحصائيات الفورية (4 بطاقات متكاملة) -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+            <div
+              class="glass-card rounded-2xl p-4 text-center sm:text-right flex flex-col sm:flex-row items-center justify-between"
+            >
+              <div>
+                <span class="text-xs text-slate-400 block">إجمالي الرسائل</span>
+                <span
+                  id="statTotal"
+                  class="text-2xl font-extrabold text-white mt-1 block"
+                  >0</span
+                >
+              </div>
+              <div
+                class="hidden sm:flex w-10 h-10 rounded-xl bg-violet-500/20 text-violet-300 items-center justify-center"
+              >
+                <i data-lucide="inbox" class="w-5 h-5"></i>
+              </div>
+            </div>
+
+            <div
+              class="glass-card rounded-2xl p-4 text-center sm:text-right flex flex-col sm:flex-row items-center justify-between"
+            >
+              <div>
+                <span class="text-xs text-slate-400 block">غير مقروءة</span>
+                <span
+                  id="statUnread"
+                  class="text-2xl font-extrabold text-rose-400 mt-1 block"
+                  >0</span
+                >
+              </div>
+              <div
+                class="hidden sm:flex w-10 h-10 rounded-xl bg-rose-500/20 text-rose-400 items-center justify-center"
+              >
+                <i data-lucide="mail-unread" class="w-5 h-5"></i>
+              </div>
+            </div>
+
+            <div
+              class="glass-card rounded-2xl p-4 text-center sm:text-right flex flex-col sm:flex-row items-center justify-between"
+            >
+              <div>
+                <span class="text-xs text-slate-400 block">رسائل اليوم</span>
+                <span
+                  id="statToday"
+                  class="text-2xl font-extrabold text-brand-cyan mt-1 block"
+                  >0</span
+                >
+              </div>
+              <div
+                class="hidden sm:flex w-10 h-10 rounded-xl bg-sky-500/20 text-brand-cyan items-center justify-center"
+              >
+                <i data-lucide="sparkles" class="w-5 h-5"></i>
+              </div>
+            </div>
+
+            <div
+              class="glass-card rounded-2xl p-4 text-center sm:text-right flex flex-col sm:flex-row items-center justify-between"
+            >
+              <div>
+                <span class="text-xs text-slate-400 block">المميزة بنجمة</span>
+                <span
+                  id="statStarred"
+                  class="text-2xl font-extrabold text-amber-400 mt-1 block"
+                  >0</span
+                >
+              </div>
+              <div
+                class="hidden sm:flex w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 items-center justify-center"
+              >
+                <i data-lucide="star" class="w-5 h-5"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- شريط البحث والفلترة -->
+          <div
+            class="glass-panel rounded-2xl p-3 sm:p-4 flex flex-col sm:flex-row items-center justify-between gap-3"
+          >
+            <!-- البحث -->
+            <div class="relative w-full sm:w-72">
+              <i
+                data-lucide="search"
+                class="w-4 h-4 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2"
+              ></i>
+              <input
+                type="text"
+                id="searchInput"
+                oninput="renderMessages()"
+                placeholder="ابحث في محتوى الرسائل..."
+                class="w-full bg-brand-dark/80 text-white text-sm rounded-xl pr-10 pl-4 py-2 border border-white/10 focus:border-brand-cyan outline-none"
+              />
+            </div>
+
+            <!-- أزرار الفلترة -->
+            <div
+              class="flex items-center gap-1.5 w-full sm:w-auto justify-center"
+            >
+              <button
+                onclick="setFilter('all')"
+                id="filterAll"
+                class="filter-btn active px-3.5 py-1.5 rounded-xl text-xs font-bold bg-violet-600 text-white transition-all"
+              >
+                الكل
+              </button>
+              <button
+                onclick="setFilter('unread')"
+                id="filterUnread"
+                class="filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white/5 text-slate-300 hover:bg-white/10 transition-all"
+              >
+                غير مقروءة
+              </button>
+              <button
+                onclick="setFilter('starred')"
+                id="filterStarred"
+                class="filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white/5 text-slate-300 hover:bg-white/10 transition-all"
+              >
+                المميزة ⭐
+              </button>
+            </div>
+          </div>
+
+          <!-- قائمة بطاقات الرسائل -->
+          <div id="messagesGrid" class="grid grid-cols-1 gap-4">
+            <!-- يتم حقن البطاقات ديناميكياً عبر JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- التذييل -->
+      <footer
+        class="mt-10 text-center text-xs text-slate-500 py-4 border-t border-white/5 relative"
+      >
+        <p class="text-slate-400 font-medium">
+          جميع الرسائل مشفرة وسرية تماماً • الأمانة الاجتماعية
+        </p>
+        <div
+          class="mt-1.5 flex items-center justify-center gap-2 text-[11px] text-slate-600"
+        >
+          <span>© 2026 جمعية دبلوم علوم حاسوب وتقانة المعلومات</span>
+          <span>•</span>
+          <button
+            onclick="enterAdminMode()"
+            class="text-slate-600 hover:text-brand-cyan transition-colors underline decoration-dotted"
+            title="بوابة الأمين الاجتماعي"
+          >
+            الإدارة
+          </button>
+        </div>
+      </footer>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- نافذة معاينة بطاقة المشاركة (Share Story Card Modal)       -->
+    <!-- ========================================================= -->
+    <div
+      id="shareCardModal"
+      class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
+    >
+      <div
+        class="bg-brand-card border border-violet-500/30 rounded-3xl max-w-md w-full p-5 shadow-2xl"
+      >
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <i data-lucide="image" class="w-5 h-5 text-brand-cyan"></i>
+            <span>تصدير بطاقة للستوري</span>
+          </h3>
+          <button
+            onclick="closeShareModal()"
+            class="p-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white"
+          >
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <!-- البطاقة المصممة للنشر -->
+        <div
+          id="storyCardPreview"
+          class="rounded-2xl p-6 bg-gradient-to-br from-[#2a125c] via-[#150d30] to-[#0a192f] border-2 border-brand-cyan/40 shadow-xl relative overflow-hidden text-center"
+        >
+          <div
+            class="absolute -top-12 -right-12 w-32 h-32 bg-brand-cyan/20 rounded-full blur-2xl"
+          ></div>
+          <div
+            class="absolute -bottom-12 -left-12 w-32 h-32 bg-violet-600/30 rounded-full blur-2xl"
+          ></div>
+
+          <div
+            class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-brand-cyan text-xs font-bold mb-4"
+          >
+            <span>🤝 الأمانة الاجتماعية</span>
+          </div>
+
+          <div
+            class="bg-black/35 backdrop-blur-md rounded-2xl p-5 border border-white/10 my-2"
+          >
+            <p
+              id="shareCardText"
+              class="text-white text-base sm:text-lg font-bold leading-relaxed whitespace-pre-wrap"
+            ></p>
+          </div>
+
+          <div
+            class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-[11px] text-slate-300"
+          >
+            <span>جمعية دبلوم علوم حاسوب</span>
+            <span class="text-brand-cyan font-bold"
+              >صارحني • رسالة سرية 🔒</span
+            >
+          </div>
+        </div>
+
+        <div class="mt-4 flex items-center gap-2">
+          <button
+            onclick="downloadStoryCardImage()"
+            class="flex-1 py-2.5 rounded-xl bg-gradient-to-l from-violet-600 to-sky-500 text-white text-xs sm:text-sm font-bold hover:brightness-110 transition-all flex items-center justify-center gap-1.5"
+          >
+            <i data-lucide="download" class="w-4 h-4"></i>
+            <span>تحميل كصورة PNG</span>
+          </button>
+          <button
+            onclick="copyShareCardText()"
+            class="px-3.5 py-2.5 rounded-xl bg-white/10 text-slate-200 text-xs sm:text-sm font-bold hover:bg-white/15 flex items-center justify-center gap-1.5"
+          >
+            <i data-lucide="copy" class="w-4 h-4"></i>
+            <span>نسخ النص</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- نافذة تأكيد الحذف المخصصة (بدلاً من confirm) -->
+    <div
+      id="deleteConfirmModal"
+      class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
+    >
+      <div
+        class="bg-brand-card border border-rose-500/30 rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl"
+      >
+        <div
+          class="w-12 h-12 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center mx-auto mb-3"
+        >
+          <i data-lucide="trash-2" class="w-6 h-6"></i>
+        </div>
+        <h3 class="text-lg font-bold text-white mb-1">حذف الرسالة؟</h3>
+        <p class="text-xs text-slate-400 mb-5">
+          هل أنت متأكد من رغبتك في حذف هذه الرسالة نهائياً من صندوق الوارد؟
+        </p>
+        <div class="flex items-center gap-2">
+          <button
+            id="confirmDeleteBtn"
+            class="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-sm font-bold transition-all"
+          >
+            نعم، احذف
+          </button>
+          <button
+            onclick="closeDeleteModal()"
+            class="flex-1 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-slate-300 text-sm font-bold transition-all"
+          >
+            إلغاء
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- إشعار Toast عائم -->
+    <div
+      id="toastNotification"
+      class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 hidden items-center gap-2 px-4 py-2.5 rounded-2xl bg-slate-900/95 border border-brand-cyan/40 text-white text-xs font-bold shadow-2xl"
+    >
+      <i data-lucide="check-circle" class="w-4 h-4 text-brand-cyan"></i>
+      <span id="toastText">تم النسخ بنجاح</span>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- المنطق البرمجي للتطبيق (JavaScript + Storage + Firebase Ready) -->
+    <!-- ========================================================= -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+      import {
+        getAuth,
+        signInAnonymously,
+        signInWithCustomToken,
+      } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+      import {
+        getFirestore,
+        collection,
+        addDoc,
+        onSnapshot,
+        doc,
+        updateDoc,
+        deleteDoc,
+      } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+      // -------------------------------------------------------------
+      // 1. إعدادات قاعدة البيانات والتخزين (Firebase + Local Fallback)
+      // -------------------------------------------------------------
+      const STORAGE_KEY = "social_secretariat_messages_v1";
+      const ADMIN_PIN = "2026"; // الرمز السري للأمين الاجتماعي
+
+      let useCloudFirestore = false;
+      let db = null;
+      let auth = null;
+      let currentUser = null;
+      const appId =
+        typeof __app_id !== "undefined" ? __app_id : "social-secretariat-app";
+
+      // تهيئة Firebase تلقائياً إذا كانت الإعدادات متوفرة في البيئة
+      async function initCloudConnection() {
+        try {
+          if (typeof __firebase_config !== "undefined" && __firebase_config) {
+            const firebaseConfig = JSON.parse(__firebase_config);
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+
+            if (
+              typeof __initial_auth_token !== "undefined" &&
+              __initial_auth_token
+            ) {
+              const cred = await signInWithCustomToken(
+                auth,
+                __initial_auth_token,
+              );
+              currentUser = cred.user;
+            } else {
+              const cred = await signInAnonymously(auth);
+              currentUser = cred.user;
+            }
+
+            if (currentUser) {
+              useCloudFirestore = true;
+              const badge = document.getElementById("connectionBadge");
+              if (badge) badge.textContent = "متصل سحابياً";
+              listenToCloudMessages();
+              return;
+            }
+          }
+        } catch (err) {
+          console.warn("Running in local storage mode:", err);
+        }
+        // التراجع التلقائي للتخزين المحلي في حال عدم وجود إعدادات سحابية
+        initLocalMessages();
+      }
+
+      function listenToCloudMessages() {
+        if (!useCloudFirestore || !currentUser) return;
+        const colRef = collection(
+          db,
+          "artifacts",
+          appId,
+          "public",
+          "data",
+          "saraha_messages",
+        );
+        onSnapshot(
+          colRef,
+          (snapshot) => {
+            const cloudList = [];
+            snapshot.forEach((docSnap) => {
+              cloudList.push({ docId: docSnap.id, ...docSnap.data() });
+            });
+            // الترتيب في الذاكرة من الأحدث للأقدم
+            cloudList.sort(
+              (a, b) => new Date(b.timestamp) - new Date(a.timestamp),
+            );
+            messages = cloudList;
+            updateUnreadBadge();
+            if (isAdminAuthenticated) {
+              renderDashboard();
+            }
+          },
+          (error) => {
+            console.error("Firestore error:", error);
+          },
+        );
+      }
+
+      // بيانات تجريبية واقعية مسبقة لجمعية دبلوم علوم حاسوب وتقانة المعلومات
+      const initialSeedMessages = [
+        {
+          id: "SOC-9482",
+          mood: "💡",
+          content:
+            "السلام عليكم، نشكر الأمانة الاجتماعية على المجهودات الكبيرة في توفير الكهرباء ومتابعة معامل الحاسوب. عندي مقترح نعمل يوم مفتوح للتعريف بمشاريع التخرج لطلاب الدبلوم.",
+          timestamp: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
+          starred: true,
+          read: false,
+        },
+        {
+          id: "SOC-8310",
+          mood: "🤝",
+          content:
+            "تحية طيبة للأمين الاجتماعي عبدالرحمن ولكل طاقم الجمعية.. مبادرة المساهمة الشهرية فكرة ممتازة جداً وهتساعد في حل مشاكل المعامل بشكل جذري. مستعدين للمشاركة.",
+          timestamp: new Date(Date.now() - 1000 * 60 * 180).toISOString(),
+          starred: true,
+          read: true,
+        },
+        {
+          id: "SOC-7104",
+          mood: "🎓",
+          content:
+            "يا ريت لو يكون في صندوق تكافل مصغر بسرية تامة لمساعدة الطلاب المحتاجين لطباعة المراجع أو رسوم التدريب العملي في المعامل.",
+          timestamp: new Date(Date.now() - 1000 * 60 * 60 * 26).toISOString(),
+          starred: false,
+          read: false,
+        },
+      ];
+
+      // حالة التطبيق
+      let messages = [];
+      let selectedMood = "";
+      let currentFilter = "all";
+      let isAdminAuthenticated = false;
+      let messageIdToDelete = null;
+
+      // تهيئة التطبيق عند التحميل والتحقق من معامل الرابط (?admin=true)
+      document.addEventListener("DOMContentLoaded", async () => {
+        lucide.createIcons();
+        setupTextareaCounter();
+        await initCloudConnection();
+        checkUrlRoute();
+      });
+
+      // التحقق من المسار: الافتراضي هو صفحة الإرسال فقط، إلا إذا كان الرابط يحتوي على ?admin=true
+      function checkUrlRoute() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get("admin") === "true") {
+          enterAdminMode();
+        } else {
+          exitAdminMode(false);
+        }
+      }
+
+      function initLocalMessages() {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+          messages = JSON.parse(stored);
+        } else {
+          messages = [...initialSeedMessages];
+          saveLocalMessages();
+        }
+        updateUnreadBadge();
+      }
+
+      function saveLocalMessages() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+        updateUnreadBadge();
+      }
+
+      // -------------------------------------------------------------
+      // 2. منطق واجهة الإرسال للطلاب
+      // -------------------------------------------------------------
+      function setupTextareaCounter() {
+        const input = document.getElementById("messageInput");
+        const counter = document.getElementById("charCounter");
+        const clearBtn = document.getElementById("clearTextBtn");
+
+        input.addEventListener("input", () => {
+          const len = input.value.length;
+          counter.textContent = `${len} / 500`;
+
+          if (len > 0) {
+            clearBtn.classList.remove("hidden");
+          } else {
+            clearBtn.classList.add("hidden");
+          }
+
+          if (len >= 450) {
+            counter.classList.add("text-amber-400");
+          } else {
+            counter.classList.remove("text-amber-400");
+          }
+        });
+      }
+
+      window.clearMessageInput = function () {
+        const input = document.getElementById("messageInput");
+        input.value = "";
+        document.getElementById("charCounter").textContent = "0 / 500";
+        document.getElementById("clearTextBtn").classList.add("hidden");
+        input.focus();
+      };
+
+      window.selectMood = function (btn, mood) {
+        const allBtns = document.querySelectorAll(".mood-btn");
+        if (selectedMood === mood) {
+          selectedMood = "";
+          btn.classList.remove("bg-violet-600/40", "border-brand-cyan");
+        } else {
+          allBtns.forEach((b) =>
+            b.classList.remove("bg-violet-600/40", "border-brand-cyan"),
+          );
+          selectedMood = mood;
+          btn.classList.add("bg-violet-600/40", "border-brand-cyan");
+        }
+      };
+
+      window.handleSendMessage = async function () {
+        const input = document.getElementById("messageInput");
+        const errorAlert = document.getElementById("errorAlert");
+        const sendButton = document.getElementById("sendButton");
+        const sendBtnText = document.getElementById("sendBtnText");
+        const sendIcon = document.getElementById("sendIcon");
+        const text = input.value.trim();
+
+        if (!text) {
+          errorAlert.classList.remove("hidden");
+          input.focus();
+          return;
+        }
+
+        errorAlert.classList.add("hidden");
+        sendButton.disabled = true;
+        sendBtnText.textContent = "جاري التشفير والإرسال...";
+        sendIcon.classList.add("animate-send");
+
+        const refNumber = "SOC-" + Math.floor(1000 + Math.random() * 9000);
+        const newMessage = {
+          id: refNumber,
+          mood: selectedMood || "💬",
+          content: text,
+          timestamp: new Date().toISOString(),
+          starred: false,
+          read: false,
+        };
+
+        try {
+          if (useCloudFirestore && currentUser) {
+            const colRef = collection(
+              db,
+              "artifacts",
+              appId,
+              "public",
+              "data",
+              "saraha_messages",
+            );
+            await addDoc(colRef, newMessage);
+          } else {
+            await new Promise((r) => setTimeout(r, 450));
+            messages.unshift(newMessage);
+            saveLocalMessages();
+          }
+
+          // عرض شاشة النجاح
+          document.getElementById("sendFormContainer").classList.add("hidden");
+          document.getElementById("refCodeDisplay").textContent =
+            `#${refNumber}`;
+          document
+            .getElementById("successContainer")
+            .classList.remove("hidden");
+          lucide.createIcons();
+        } catch (err) {
+          errorAlert.classList.remove("hidden");
+          document.getElementById("errorText").textContent =
+            "تعذر الإرسال، يرجى المحاولة مرة أخرى.";
+        } finally {
+          sendButton.disabled = false;
+          sendBtnText.textContent = "إرسال الرسالة بسرية تامة";
+          sendIcon.classList.remove("animate-send");
+        }
+      };
+
+      window.resetSendForm = function () {
+        document.getElementById("messageInput").value = "";
+        document.getElementById("charCounter").textContent = "0 / 500";
+        document.getElementById("clearTextBtn").classList.add("hidden");
+        selectedMood = "";
+        document
+          .querySelectorAll(".mood-btn")
+          .forEach((b) =>
+            b.classList.remove("bg-violet-600/40", "border-brand-cyan"),
+          );
+        document.getElementById("successContainer").classList.add("hidden");
+        document.getElementById("sendFormContainer").classList.remove("hidden");
+      };
+
+      // -------------------------------------------------------------
+      // 3. إدارة الدخول والخروج من وضع الأمين الاجتماعي
+      // -------------------------------------------------------------
+      window.enterAdminMode = function () {
+        document.getElementById("studentView").classList.add("hidden");
+        document.getElementById("adminView").classList.remove("hidden");
+        document.getElementById("adminTopNav").classList.remove("hidden");
+
+        // تحديث الرابط ليشمل ?admin=true دون إعادة تحميل الصفحة
+        const url = new URL(window.location);
+        url.searchParams.set("admin", "true");
+        window.history.replaceState({}, "", url);
+
+        if (isAdminAuthenticated) {
+          renderDashboard();
+        } else {
+          setTimeout(
+            () => document.getElementById("adminPinInput")?.focus(),
+            100,
+          );
+        }
+      };
+
+      window.exitAdminMode = function (updateHistory = true) {
+        document.getElementById("adminView").classList.add("hidden");
+        document.getElementById("adminTopNav").classList.add("hidden");
+        document.getElementById("studentView").classList.remove("hidden");
+
+        if (updateHistory) {
+          const url = new URL(window.location);
+          url.searchParams.delete("admin");
+          window.history.replaceState({}, "", url);
+        }
+      };
+
+      window.handleAdminLogin = function (e) {
+        e.preventDefault();
+        const pinInput = document.getElementById("adminPinInput");
+        const loginError = document.getElementById("loginError");
+
+        if (pinInput.value === ADMIN_PIN) {
+          isAdminAuthenticated = true;
+          loginError.classList.add("hidden");
+          pinInput.value = "";
+          document.getElementById("adminLockScreen").classList.add("hidden");
+          document
+            .getElementById("adminDashboardContent")
+            .classList.remove("hidden");
+          renderDashboard();
+        } else {
+          loginError.classList.remove("hidden");
+          pinInput.value = "";
+          pinInput.focus();
+        }
+      };
+
+      window.logoutAdmin = function () {
+        isAdminAuthenticated = false;
+        document
+          .getElementById("adminDashboardContent")
+          .classList.add("hidden");
+        document.getElementById("adminLockScreen").classList.remove("hidden");
+        exitAdminMode(true);
+      };
+
+      // -------------------------------------------------------------
+      // 4. إدارة وعرض الرسائل في لوحة التحكم
+      // -------------------------------------------------------------
+      function updateUnreadBadge() {
+        const unreadCount = messages.filter((m) => !m.read).length;
+        const badge = document.getElementById("unreadBadge");
+        if (badge) {
+          if (unreadCount > 0) {
+            badge.textContent = unreadCount;
+            badge.classList.remove("hidden");
+          } else {
+            badge.classList.add("hidden");
+          }
+        }
+      }
+
+      function updateStats() {
+        const total = messages.length;
+        const unread = messages.filter((m) => !m.read).length;
+        const starred = messages.filter((m) => m.starred).length;
+        const todayStr = new Date().toDateString();
+        const todayCount = messages.filter(
+          (m) => new Date(m.timestamp).toDateString() === todayStr,
+        ).length;
+
+        document.getElementById("statTotal").textContent = total;
+        document.getElementById("statUnread").textContent = unread;
+        document.getElementById("statToday").textContent = todayCount;
+        document.getElementById("statStarred").textContent = starred;
+      }
+
+      window.setFilter = function (filterType) {
+        currentFilter = filterType;
+        document.querySelectorAll(".filter-btn").forEach((btn) => {
+          btn.classList.remove("bg-violet-600", "text-white");
+          btn.classList.add("bg-white/5", "text-slate-300");
+        });
+
+        const activeBtnId =
+          filterType === "all"
+            ? "filterAll"
+            : filterType === "unread"
+              ? "filterUnread"
+              : "filterStarred";
+        const activeBtn = document.getElementById(activeBtnId);
+        activeBtn.classList.remove("bg-white/5", "text-slate-300");
+        activeBtn.classList.add("bg-violet-600", "text-white");
+
+        renderMessages();
+      };
+
+      function renderDashboard() {
+        updateStats();
+        renderMessages();
+      }
+
+      window.renderMessages = function () {
+        const grid = document.getElementById("messagesGrid");
+        const searchQuery = document
+          .getElementById("searchInput")
+          .value.trim()
+          .toLowerCase();
+
+        let filtered = messages.filter((msg) => {
+          const matchesSearch =
+            msg.content.toLowerCase().includes(searchQuery) ||
+            msg.id.toLowerCase().includes(searchQuery);
+          if (!matchesSearch) return false;
+          if (currentFilter === "unread") return !msg.read;
+          if (currentFilter === "starred") return msg.starred;
+          return true;
+        });
+
+        if (filtered.length === 0) {
+          grid.innerHTML = `
+                    <div class="glass-panel rounded-3xl p-10 text-center">
+                        <div class="w-14 h-14 rounded-full bg-white/5 text-slate-400 flex items-center justify-center mx-auto mb-3">
+                            <i data-lucide="inbox" class="w-7 h-7"></i>
+                        </div>
+                        <p class="text-slate-300 font-bold">لا توجد رسائل مطابقة للعرض حالياً</p>
+                        <p class="text-xs text-slate-500 mt-1">ستظهر الرسائل الجديدة هنا فور إرسالها من قبل الطلاب</p>
+                    </div>
+                `;
+          lucide.createIcons();
+          return;
+        }
+
+        grid.innerHTML = filtered
+          .map((msg) => {
+            const formattedDate = formatArabicDate(msg.timestamp);
+            const unreadBorder = !msg.read
+              ? "border-r-4 border-r-brand-cyan bg-violet-950/30"
+              : "";
+            const starColor = msg.starred
+              ? "text-amber-400 fill-amber-400"
+              : "text-slate-400 hover:text-amber-300";
+
+            return `
+                    <div class="glass-card rounded-2xl p-5 cursor-pointer ${unreadBorder}" onclick="markAsRead('${msg.id}')">
+                        <div class="flex items-start justify-between gap-3 mb-3">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-9 h-9 rounded-xl bg-brand-dark/80 border border-white/10 flex items-center justify-center text-lg">
+                                    ${msg.mood || "💬"}
+                                </span>
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs font-mono font-bold text-brand-cyan">#${msg.id}</span>
+                                        ${!msg.read ? '<span class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-brand-cyan/20 text-brand-cyan">جديدة</span>' : ""}
+                                    </div>
+                                    <span class="text-[11px] text-slate-400 flex items-center gap-1 mt-0.5">
+                                        <i data-lucide="clock" class="w-3 h-3"></i>
+                                        ${formattedDate}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- أزرار التحكم بالرسالة -->
+                            <div class="flex items-center gap-1" onclick="event.stopPropagation()">
+                                <button onclick="toggleStar('${msg.id}')" title="تمييز بنجمة" class="p-2 rounded-xl hover:bg-white/10 transition-all">
+                                    <i data-lucide="star" class="w-4 h-4 ${starColor}"></i>
+                                </button>
+                                <button onclick="openShareModal('${msg.id}')" title="تصدير كبطاقة ستوري" class="p-2 rounded-xl hover:bg-white/10 text-sky-400 transition-all">
+                                    <i data-lucide="image" class="w-4 h-4"></i>
+                                </button>
+                                <button onclick="copyMessageText('${msg.id}')" title="نسخ النص" class="p-2 rounded-xl hover:bg-white/10 text-slate-300 transition-all">
+                                    <i data-lucide="copy" class="w-4 h-4"></i>
+                                </button>
+                                <button onclick="requestDelete('${msg.id}')" title="حذف الرسالة" class="p-2 rounded-xl hover:bg-rose-500/20 text-rose-400 transition-all">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <p class="text-slate-100 text-sm sm:text-base leading-relaxed whitespace-pre-wrap pr-1">
+                            ${escapeHTML(msg.content)}
+                        </p>
+                    </div>
+                `;
+          })
+          .join("");
+
+        lucide.createIcons();
+      };
+
+      window.markAsRead = async function (id) {
+        const msg = messages.find((m) => m.id === id);
+        if (msg && !msg.read) {
+          msg.read = true;
+          if (useCloudFirestore && msg.docId) {
+            const docRef = doc(
+              db,
+              "artifacts",
+              appId,
+              "public",
+              "data",
+              "saraha_messages",
+              msg.docId,
+            );
+            await updateDoc(docRef, { read: true });
+          } else {
+            saveLocalMessages();
+            renderDashboard();
+          }
+        }
+      };
+
+      window.toggleStar = async function (id) {
+        const msg = messages.find((m) => m.id === id);
+        if (msg) {
+          const newVal = !msg.starred;
+          msg.starred = newVal;
+          if (useCloudFirestore && msg.docId) {
+            const docRef = doc(
+              db,
+              "artifacts",
+              appId,
+              "public",
+              "data",
+              "saraha_messages",
+              msg.docId,
+            );
+            await updateDoc(docRef, { starred: newVal });
+          } else {
+            saveLocalMessages();
+            renderDashboard();
+          }
+          showToast(
+            newVal ? "تمت إضافة الرسالة للمفضلة ⭐" : "تمت الإزالة من المفضلة",
+          );
+        }
+      };
+
+      window.copyMessageText = function (id) {
+        const msg = messages.find((m) => m.id === id);
+        if (msg) {
+          copyToClipboard(msg.content);
+          showToast("تم نسخ نص الرسالة بنجاح");
+        }
+      };
+
+      window.copyPublicSendLink = function () {
+        const publicUrl = new URL(window.location.href);
+        publicUrl.searchParams.delete("admin");
+        copyToClipboard(publicUrl.toString());
+        showToast("تم نسخ رابط الإرسال العام النظيف للمشاركة في المجموعات 🔗");
+      };
+
+      // -------------------------------------------------------------
+      // 5. نافذة بطاقة المشاركة وتصدير الصورة والحذف
+      // -------------------------------------------------------------
+      window.openShareModal = function (id) {
+        const msg = messages.find((m) => m.id === id);
+        if (!msg) return;
+        document.getElementById("shareCardText").textContent = msg.content;
+        document.getElementById("shareCardModal").classList.remove("hidden");
+        lucide.createIcons();
+      };
+
+      window.closeShareModal = function () {
+        document.getElementById("shareCardModal").classList.add("hidden");
+      };
+
+      window.downloadStoryCardImage = async function () {
+        const cardElement = document.getElementById("storyCardPreview");
+        if (typeof html2canvas === "undefined") {
+          showToast("يرجى أخذ لقطة شاشة للبطاقة");
+          return;
+        }
+        try {
+          showToast("جاري تجهيز الصورة...");
+          const canvas = await html2canvas(cardElement, {
+            scale: 2,
+            backgroundColor: "#0a192f",
+            useCORS: true,
+          });
+          const link = document.createElement("a");
+          link.download = `saraha-social-sec-${Date.now()}.png`;
+          link.href = canvas.toDataURL("image/png");
+          link.click();
+          showToast("تم تحميل بطاقة الستوري بنجاح ✅");
+        } catch (e) {
+          showToast("تعذر التحميل التلقائي، يمكنك أخذ لقطة شاشة");
+        }
+      };
+
+      window.copyShareCardText = function () {
+        const text = document.getElementById("shareCardText").textContent;
+        const formatted = `رسالة سرية للأمانة الاجتماعية 🤝:\n"${text}"\n— جمعية دبلوم علوم حاسوب وتقانة المعلومات`;
+        copyToClipboard(formatted);
+        showToast("تم نسخ البطاقة النصية للمشاركة");
+      };
+
+      window.requestDelete = function (id) {
+        messageIdToDelete = id;
+        document
+          .getElementById("deleteConfirmModal")
+          .classList.remove("hidden");
+        document.getElementById("confirmDeleteBtn").onclick = async () => {
+          const target = messages.find((m) => m.id === messageIdToDelete);
+          if (useCloudFirestore && target && target.docId) {
+            const docRef = doc(
+              db,
+              "artifacts",
+              appId,
+              "public",
+              "data",
+              "saraha_messages",
+              target.docId,
+            );
+            await deleteDoc(docRef);
+          } else {
+            messages = messages.filter((m) => m.id !== messageIdToDelete);
+            saveLocalMessages();
+            renderDashboard();
+          }
+          closeDeleteModal();
+          showToast("تم حذف الرسالة نهائياً");
+        };
+        lucide.createIcons();
+      };
+
+      window.closeDeleteModal = function () {
+        messageIdToDelete = null;
+        document.getElementById("deleteConfirmModal").classList.add("hidden");
+      };
+
+      function showToast(text) {
+        const toast = document.getElementById("toastNotification");
+        document.getElementById("toastText").textContent = text;
+        toast.classList.remove("hidden");
+        toast.classList.add("flex");
+        setTimeout(() => {
+          toast.classList.add("hidden");
+          toast.classList.remove("flex");
+        }, 3000);
+      }
+
+      function copyToClipboard(text) {
+        const tempInput = document.createElement("textarea");
+        tempInput.value = text;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempInput);
+      }
+
+      function formatArabicDate(isoStr) {
+        const date = new Date(isoStr);
+        return date.toLocaleDateString("ar-EG", {
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      }
+
+      function escapeHTML(str) {
+        return str.replace(
+          /[&<>'"]/g,
+          (tag) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              "'": "&#39;",
+              '"': "&quot;",
+            })[tag],
+        );
+      }
+    </script>
+  </body>
+</html>
