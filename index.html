@@ -154,7 +154,7 @@
     <div
       class="relative z-10 max-w-4xl mx-auto px-4 py-6 sm:py-10 flex flex-col min-h-screen justify-between"
     >
-      <!-- الشريط العلوي (يظهر بشكل مبسط للزوار، وأزرار التحكم تظهر فقط في وضع الإدارة) -->
+      <!-- الشريط العلوي -->
       <header
         class="flex items-center justify-center sm:justify-between gap-4 mb-6"
       >
@@ -169,7 +169,7 @@
           </span>
         </div>
 
-        <!-- شريط التنقل الخاص بالأمين (مخفي تماماً عن الزوار العاديين) -->
+        <!-- شريط التنقل الخاص بالأمين -->
         <nav
           id="adminTopNav"
           class="hidden glass-panel p-1.5 rounded-2xl flex items-center gap-1.5"
@@ -200,7 +200,7 @@
       </header>
 
       <!-- ========================================================= -->
-      <!-- 1. واجهة الإرسال للطلاب (Student Anonymous Send View)      -->
+      <!-- 1. واجهة الإرسال للطلاب (Student Anonymous Send View)       -->
       <!-- ========================================================= -->
       <main
         id="studentView"
@@ -289,7 +289,6 @@
 
                 <!-- شبكة حاسوبية وعقد مضيئة حول المركز -->
                 <g stroke="#38bdf8" stroke-width="1.5" stroke-opacity="0.65">
-                  <!-- خطوط الشبكة -->
                   <line x1="100" y1="22" x2="100" y2="48" />
                   <line x1="100" y1="152" x2="100" y2="178" />
                   <line x1="22" y1="100" x2="48" y2="100" />
@@ -299,7 +298,6 @@
                   <line x1="155" y1="45" x2="135" y2="65" />
                   <line x1="65" y1="135" x2="45" y2="155" />
 
-                  <!-- مسارات دوائر إلكترونية -->
                   <path d="M72 30 L85 45 L85 55" fill="none" />
                   <path d="M128 30 L115 45 L115 55" fill="none" />
                   <path d="M30 72 L45 85 L55 85" fill="none" />
@@ -336,7 +334,6 @@
                   fill="none"
                   filter="url(#glow)"
                 >
-                  <!-- اليد اليسرى واليمنى متصافحتان -->
                   <path
                     d="M12 34 L26 20 C31 15 39 15 44 20 L48 24 L56 16 C61 11 69 11 74 16 L84 26"
                   />
@@ -346,11 +343,9 @@
                   <path
                     d="M48 24 L38 34 C35 37 35 41 38 44 C41 47 45 47 48 44 L58 34"
                   />
-                  <!-- خطوط الأصابع -->
                   <path d="M26 50 L32 44" />
                   <path d="M32 56 L38 50" />
                   <path d="M38 61 L44 55" />
-                  <!-- أكمام -->
                   <path
                     d="M6 28 L18 40 L10 48 L-2 36 Z"
                     fill="#1e1b4b"
@@ -388,7 +383,6 @@
 
           <!-- نموذج الإرسال -->
           <div id="sendFormContainer">
-            <!-- اختيار شعور / إيموجي سريع -->
             <div class="mb-4">
               <div class="flex items-center justify-between mb-2">
                 <label class="text-xs text-slate-400 font-medium"
@@ -461,7 +455,6 @@
                 class="w-full bg-brand-dark/80 text-white placeholder-slate-500 rounded-2xl p-4 text-base leading-relaxed border border-violet-500/30 focus:border-brand-cyan focus:ring-2 focus:ring-brand-cyan/20 outline-none resize-none transition-all"
               ></textarea>
 
-              <!-- عداد الأحرف -->
               <div class="flex items-center justify-between mt-2 px-1 text-xs">
                 <span
                   class="flex items-center gap-1.5 text-emerald-400 font-medium"
@@ -492,7 +485,7 @@
               onclick="handleSendMessage()"
               class="w-full py-3.5 px-6 rounded-2xl font-bold text-base text-white bg-gradient-to-l from-violet-600 via-indigo-600 to-sky-500 hover:brightness-110 active:scale-[0.99] transition-all shadow-lg shadow-violet-600/30 flex items-center justify-center gap-2.5 group"
             >
-              <span id="sendBtnText">إرسال الرسالة </span>
+              <span id="sendBtnText">إرسال الرسالة بسرية تامة</span>
               <i
                 id="sendIcon"
                 data-lucide="send"
@@ -594,15 +587,10 @@
               </button>
             </div>
           </form>
-          <p class="mt-4 text-xs text-slate-500">
-            
-            <span class="text-brand-cyan font-mono font-bold"></span>
-          </p>
         </div>
 
         <!-- محتوى لوحة التحكم بعد تسجيل الدخول -->
         <div id="adminDashboardContent" class="hidden space-y-6">
-          <!-- رأس لوحة التحكم -->
           <div
             class="glass-panel rounded-3xl p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
           >
@@ -614,7 +602,7 @@
                 <span
                   id="connectionBadge"
                   class="px-2.5 py-0.5 text-xs rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
-                  >نشط</span
+                  >جاري الاتصال...</span
                 >
               </div>
               <p class="text-xs sm:text-sm text-slate-400 mt-1">
@@ -641,7 +629,7 @@
             </div>
           </div>
 
-          <!-- بطاقات الإحصائيات الفورية (4 بطاقات متكاملة) -->
+          <!-- بطاقات الإحصائيات الفورية -->
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
             <div
               class="glass-card rounded-2xl p-4 text-center sm:text-right flex flex-col sm:flex-row items-center justify-between"
@@ -720,7 +708,6 @@
           <div
             class="glass-panel rounded-2xl p-3 sm:p-4 flex flex-col sm:flex-row items-center justify-between gap-3"
           >
-            <!-- البحث -->
             <div class="relative w-full sm:w-72">
               <i
                 data-lucide="search"
@@ -735,7 +722,6 @@
               />
             </div>
 
-            <!-- أزرار الفلترة -->
             <div
               class="flex items-center gap-1.5 w-full sm:w-auto justify-center"
             >
@@ -764,9 +750,7 @@
           </div>
 
           <!-- قائمة بطاقات الرسائل -->
-          <div id="messagesGrid" class="grid grid-cols-1 gap-4">
-            <!-- يتم حقن البطاقات ديناميكياً عبر JS -->
-          </div>
+          <div id="messagesGrid" class="grid grid-cols-1 gap-4"></div>
         </div>
       </section>
 
@@ -781,7 +765,7 @@
           class="mt-1.5 flex items-center justify-center gap-2 text-[11px] text-slate-600"
         >
           <span>© 2026 جمعية دبلوم علوم حاسوب وتقانة المعلومات</span>
-          <span> الأمين الإجتماعي | م/عبدالرحمن عبدالحليم </span>
+          <span>الأمين الإجتماعي | م/عبدالرحمن عبدالحليم</span>
           <span>•</span>
           <button
             onclick="enterAdminMode()"
@@ -794,9 +778,7 @@
       </footer>
     </div>
 
-    <!-- ========================================================= -->
-    <!-- نافذة معاينة بطاقة المشاركة (Share Story Card Modal)       -->
-    <!-- ========================================================= -->
+    <!-- نافذة معاينة بطاقة المشاركة (Share Story Card Modal) -->
     <div
       id="shareCardModal"
       class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
@@ -817,7 +799,6 @@
           </button>
         </div>
 
-        <!-- البطاقة المصممة للنشر -->
         <div
           id="storyCardPreview"
           class="rounded-2xl p-6 bg-gradient-to-br from-[#2a125c] via-[#150d30] to-[#0a192f] border-2 border-brand-cyan/40 shadow-xl relative overflow-hidden text-center"
@@ -873,7 +854,7 @@
       </div>
     </div>
 
-    <!-- نافذة تأكيد الحذف المخصصة (بدلاً من confirm) -->
+    <!-- نافذة تأكيد الحذف المخصصة -->
     <div
       id="deleteConfirmModal"
       class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
@@ -917,156 +898,53 @@
     </div>
 
     <!-- ========================================================= -->
-    <!-- المنطق البرمجي للتطبيق (JavaScript + Storage + Firebase Ready) -->
+    <!-- المنطق البرمجي للتطبيق (Firebase Realtime Database)         -->
     <!-- ========================================================= -->
     <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
       import {
-        getAuth,
-        signInAnonymously,
-        signInWithCustomToken,
-      } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-      import {
-        getFirestore,
-        collection,
-        addDoc,
-        onSnapshot,
-        doc,
-        updateDoc,
-        deleteDoc,
-      } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        getDatabase,
+        ref,
+        push,
+        onValue,
+        update,
+        remove,
+      } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
       // -------------------------------------------------------------
-      // 1. إعدادات قاعدة البيانات والتخزين (Firebase + Local Fallback)
+      // 1. إعدادات Firebase Realtime Database (سيرفر أوروبا)
       // -------------------------------------------------------------
-      const STORAGE_KEY = "social_secretariat_messages_v1";
-      const ADMIN_PIN = "2026"; // الرمز السري للأمين الاجتماعي
+      const firebaseConfig = {
+        apiKey: "AIzaSyCL9sElU5YejvQfzPndtC-A26AL9mpwbIc",
+        authDomain: "safcit.firebaseapp.com",
+        databaseURL:
+          "https://safcit-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "safcit",
+        storageBucket: "safcit.firebasestorage.app",
+        messagingSenderId: "88966679382",
+        appId: "1:88966679382:web:4ea06347142cdddc06e4f7",
+      };
 
-      let useCloudFirestore = false;
-      let db = null;
-      let auth = null;
-      let currentUser = null;
-      const appId =
-        typeof __app_id !== "undefined" ? __app_id : "social-secretariat-app";
-
-      // تهيئة Firebase تلقائياً إذا كانت الإعدادات متوفرة في البيئة
-      async function initCloudConnection() {
-        try {
-          if (typeof __firebase_config !== "undefined" && __firebase_config) {
-            const firebaseConfig = JSON.parse(__firebase_config);
-            const app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
-            auth = getAuth(app);
-
-            if (
-              typeof __initial_auth_token !== "undefined" &&
-              __initial_auth_token
-            ) {
-              const cred = await signInWithCustomToken(
-                auth,
-                __initial_auth_token,
-              );
-              currentUser = cred.user;
-            } else {
-              const cred = await signInAnonymously(auth);
-              currentUser = cred.user;
-            }
-
-            if (currentUser) {
-              useCloudFirestore = true;
-              const badge = document.getElementById("connectionBadge");
-              if (badge) badge.textContent = "متصل سحابياً";
-              listenToCloudMessages();
-              return;
-            }
-          }
-        } catch (err) {
-          console.warn("Running in local storage mode:", err);
-        }
-        // التراجع التلقائي للتخزين المحلي في حال عدم وجود إعدادات سحابية
-        initLocalMessages();
-      }
-
-      function listenToCloudMessages() {
-        if (!useCloudFirestore || !currentUser) return;
-        const colRef = collection(
-          db,
-          "artifacts",
-          appId,
-          "public",
-          "data",
-          "saraha_messages",
-        );
-        onSnapshot(
-          colRef,
-          (snapshot) => {
-            const cloudList = [];
-            snapshot.forEach((docSnap) => {
-              cloudList.push({ docId: docSnap.id, ...docSnap.data() });
-            });
-            // الترتيب في الذاكرة من الأحدث للأقدم
-            cloudList.sort(
-              (a, b) => new Date(b.timestamp) - new Date(a.timestamp),
-            );
-            messages = cloudList;
-            updateUnreadBadge();
-            if (isAdminAuthenticated) {
-              renderDashboard();
-            }
-          },
-          (error) => {
-            console.error("Firestore error:", error);
-          },
-        );
-      }
-
-      // بيانات تجريبية واقعية مسبقة لجمعية دبلوم علوم حاسوب وتقانة المعلومات
-      const initialSeedMessages = [
-        {
-          id: "SOC-9482",
-          mood: "💡",
-          content:
-            "السلام عليكم، نشكر الأمانة الاجتماعية على المجهودات الكبيرة في توفير الكهرباء ومتابعة معامل الحاسوب. عندي مقترح نعمل يوم مفتوح للتعريف بمشاريع التخرج لطلاب الدبلوم.",
-          timestamp: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
-          starred: true,
-          read: false,
-        },
-        {
-          id: "SOC-8310",
-          mood: "🤝",
-          content:
-            "تحية طيبة للأمين الاجتماعي عبدالرحمن ولكل طاقم الجمعية.. مبادرة المساهمة الشهرية فكرة ممتازة جداً وهتساعد في حل مشاكل المعامل بشكل جذري. مستعدين للمشاركة.",
-          timestamp: new Date(Date.now() - 1000 * 60 * 180).toISOString(),
-          starred: true,
-          read: true,
-        },
-        {
-          id: "SOC-7104",
-          mood: "🎓",
-          content:
-            "يا ريت لو يكون في صندوق تكافل مصغر بسرية تامة لمساعدة الطلاب المحتاجين لطباعة المراجع أو رسوم التدريب العملي في المعامل.",
-          timestamp: new Date(Date.now() - 1000 * 60 * 60 * 26).toISOString(),
-          starred: false,
-          read: false,
-        },
-      ];
+      const ADMIN_PIN = "2026";
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase(app);
+      const messagesRef = ref(db, "saraha_messages");
 
       // حالة التطبيق
       let messages = [];
       let selectedMood = "";
       let currentFilter = "all";
       let isAdminAuthenticated = false;
-      let messageIdToDelete = null;
+      let messageKeyToDelete = null;
 
-      // تهيئة التطبيق عند التحميل والتحقق من معامل الرابط (?admin=true)
-      document.addEventListener("DOMContentLoaded", async () => {
+      // تهيئة التطبيق عند التحميل
+      document.addEventListener("DOMContentLoaded", () => {
         lucide.createIcons();
         setupTextareaCounter();
-        await initCloudConnection();
+        initRealtimeListener();
         checkUrlRoute();
       });
 
-      // التحقق من المسار: الافتراضي هو صفحة الإرسال فقط، إلا إذا كان الرابط يحتوي على ?admin=true
       function checkUrlRoute() {
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get("admin") === "true") {
@@ -1076,20 +954,51 @@
         }
       }
 
-      function initLocalMessages() {
-        const stored = localStorage.getItem(STORAGE_KEY);
-        if (stored) {
-          messages = JSON.parse(stored);
-        } else {
-          messages = [...initialSeedMessages];
-          saveLocalMessages();
-        }
-        updateUnreadBadge();
-      }
+      // الاستماع الفوري للرسائل من Firebase Realtime Database
+      function initRealtimeListener() {
+        const badge = document.getElementById("connectionBadge");
 
-      function saveLocalMessages() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
-        updateUnreadBadge();
+        onValue(
+          messagesRef,
+          (snapshot) => {
+            const data = snapshot.val();
+            const loadedList = [];
+
+            if (data) {
+              Object.keys(data).forEach((firebaseKey) => {
+                loadedList.push({
+                  firebaseKey: firebaseKey,
+                  ...data[firebaseKey],
+                });
+              });
+            }
+
+            // ترتيب الرسائل من الأحدث للأقدم
+            loadedList.sort(
+              (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
+            );
+            messages = loadedList;
+
+            if (badge) {
+              badge.textContent = "متصل سحابياً";
+              badge.className =
+                "px-2.5 py-0.5 text-xs rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+            }
+
+            updateUnreadBadge();
+            if (isAdminAuthenticated) {
+              renderDashboard();
+            }
+          },
+          (error) => {
+            console.error("Realtime DB Error:", error);
+            if (badge) {
+              badge.textContent = "خطأ في الاتصال";
+              badge.className =
+                "px-2.5 py-0.5 text-xs rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30";
+            }
+          }
+        );
       }
 
       // -------------------------------------------------------------
@@ -1133,7 +1042,7 @@
           btn.classList.remove("bg-violet-600/40", "border-brand-cyan");
         } else {
           allBtns.forEach((b) =>
-            b.classList.remove("bg-violet-600/40", "border-brand-cyan"),
+            b.classList.remove("bg-violet-600/40", "border-brand-cyan")
           );
           selectedMood = mood;
           btn.classList.add("bg-violet-600/40", "border-brand-cyan");
@@ -1170,21 +1079,7 @@
         };
 
         try {
-          if (useCloudFirestore && currentUser) {
-            const colRef = collection(
-              db,
-              "artifacts",
-              appId,
-              "public",
-              "data",
-              "saraha_messages",
-            );
-            await addDoc(colRef, newMessage);
-          } else {
-            await new Promise((r) => setTimeout(r, 450));
-            messages.unshift(newMessage);
-            saveLocalMessages();
-          }
+          await push(messagesRef, newMessage);
 
           // عرض شاشة النجاح
           document.getElementById("sendFormContainer").classList.add("hidden");
@@ -1195,9 +1090,10 @@
             .classList.remove("hidden");
           lucide.createIcons();
         } catch (err) {
+          console.error(err);
           errorAlert.classList.remove("hidden");
           document.getElementById("errorText").textContent =
-            "تعذر الإرسال، يرجى المحاولة مرة أخرى.";
+            "تعذر الإرسال، يرجى التحقق من اتصال الإنترنت والمحاولة مرة أخرى.";
         } finally {
           sendButton.disabled = false;
           sendBtnText.textContent = "إرسال الرسالة بسرية تامة";
@@ -1213,7 +1109,7 @@
         document
           .querySelectorAll(".mood-btn")
           .forEach((b) =>
-            b.classList.remove("bg-violet-600/40", "border-brand-cyan"),
+            b.classList.remove("bg-violet-600/40", "border-brand-cyan")
           );
         document.getElementById("successContainer").classList.add("hidden");
         document.getElementById("sendFormContainer").classList.remove("hidden");
@@ -1227,7 +1123,6 @@
         document.getElementById("adminView").classList.remove("hidden");
         document.getElementById("adminTopNav").classList.remove("hidden");
 
-        // تحديث الرابط ليشمل ?admin=true دون إعادة تحميل الصفحة
         const url = new URL(window.location);
         url.searchParams.set("admin", "true");
         window.history.replaceState({}, "", url);
@@ -1237,7 +1132,7 @@
         } else {
           setTimeout(
             () => document.getElementById("adminPinInput")?.focus(),
-            100,
+            100
           );
         }
       };
@@ -1306,7 +1201,7 @@
         const starred = messages.filter((m) => m.starred).length;
         const todayStr = new Date().toDateString();
         const todayCount = messages.filter(
-          (m) => new Date(m.timestamp).toDateString() === todayStr,
+          (m) => new Date(m.timestamp).toDateString() === todayStr
         ).length;
 
         document.getElementById("statTotal").textContent = total;
@@ -1350,7 +1245,7 @@
         let filtered = messages.filter((msg) => {
           const matchesSearch =
             msg.content.toLowerCase().includes(searchQuery) ||
-            msg.id.toLowerCase().includes(searchQuery);
+            (msg.id && msg.id.toLowerCase().includes(searchQuery));
           if (!matchesSearch) return false;
           if (currentFilter === "unread") return !msg.read;
           if (currentFilter === "starred") return msg.starred;
@@ -1359,14 +1254,14 @@
 
         if (filtered.length === 0) {
           grid.innerHTML = `
-                    <div class="glass-panel rounded-3xl p-10 text-center">
-                        <div class="w-14 h-14 rounded-full bg-white/5 text-slate-400 flex items-center justify-center mx-auto mb-3">
-                            <i data-lucide="inbox" class="w-7 h-7"></i>
-                        </div>
-                        <p class="text-slate-300 font-bold">لا توجد رسائل مطابقة للعرض حالياً</p>
-                        <p class="text-xs text-slate-500 mt-1">ستظهر الرسائل الجديدة هنا فور إرسالها من قبل الطلاب</p>
-                    </div>
-                `;
+            <div class="glass-panel rounded-3xl p-10 text-center">
+              <div class="w-14 h-14 rounded-full bg-white/5 text-slate-400 flex items-center justify-center mx-auto mb-3">
+                <i data-lucide="inbox" class="w-7 h-7"></i>
+              </div>
+              <p class="text-slate-300 font-bold">لا توجد رسائل مطابقة للعرض حالياً</p>
+              <p class="text-xs text-slate-500 mt-1">ستظهر الرسائل الجديدة هنا فور إرسالها من قبل الطلاب</p>
+            </div>
+          `;
           lucide.createIcons();
           return;
         }
@@ -1382,102 +1277,82 @@
               : "text-slate-400 hover:text-amber-300";
 
             return `
-                    <div class="glass-card rounded-2xl p-5 cursor-pointer ${unreadBorder}" onclick="markAsRead('${msg.id}')">
-                        <div class="flex items-start justify-between gap-3 mb-3">
-                            <div class="flex items-center gap-2.5">
-                                <span class="w-9 h-9 rounded-xl bg-brand-dark/80 border border-white/10 flex items-center justify-center text-lg">
-                                    ${msg.mood || "💬"}
-                                </span>
-                                <div>
-                                    <div class="flex items-center gap-2">
-                                        <span class="text-xs font-mono font-bold text-brand-cyan">#${msg.id}</span>
-                                        ${!msg.read ? '<span class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-brand-cyan/20 text-brand-cyan">جديدة</span>' : ""}
-                                    </div>
-                                    <span class="text-[11px] text-slate-400 flex items-center gap-1 mt-0.5">
-                                        <i data-lucide="clock" class="w-3 h-3"></i>
-                                        ${formattedDate}
-                                    </span>
-                                </div>
-                            </div>
-
-                            <!-- أزرار التحكم بالرسالة -->
-                            <div class="flex items-center gap-1" onclick="event.stopPropagation()">
-                                <button onclick="toggleStar('${msg.id}')" title="تمييز بنجمة" class="p-2 rounded-xl hover:bg-white/10 transition-all">
-                                    <i data-lucide="star" class="w-4 h-4 ${starColor}"></i>
-                                </button>
-                                <button onclick="openShareModal('${msg.id}')" title="تصدير كبطاقة ستوري" class="p-2 rounded-xl hover:bg-white/10 text-sky-400 transition-all">
-                                    <i data-lucide="image" class="w-4 h-4"></i>
-                                </button>
-                                <button onclick="copyMessageText('${msg.id}')" title="نسخ النص" class="p-2 rounded-xl hover:bg-white/10 text-slate-300 transition-all">
-                                    <i data-lucide="copy" class="w-4 h-4"></i>
-                                </button>
-                                <button onclick="requestDelete('${msg.id}')" title="حذف الرسالة" class="p-2 rounded-xl hover:bg-rose-500/20 text-rose-400 transition-all">
-                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <p class="text-slate-100 text-sm sm:text-base leading-relaxed whitespace-pre-wrap pr-1">
-                            ${escapeHTML(msg.content)}
-                        </p>
+              <div class="glass-card rounded-2xl p-5 cursor-pointer ${unreadBorder}" onclick="markAsRead('${msg.firebaseKey}')">
+                <div class="flex items-start justify-between gap-3 mb-3">
+                  <div class="flex items-center gap-2.5">
+                    <span class="w-9 h-9 rounded-xl bg-brand-dark/80 border border-white/10 flex items-center justify-center text-lg">
+                      ${msg.mood || "💬"}
+                    </span>
+                    <div>
+                      <div class="flex items-center gap-2">
+                        <span class="text-xs font-mono font-bold text-brand-cyan">#${msg.id || "SOC"}</span>
+                        ${!msg.read ? '<span class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-brand-cyan/20 text-brand-cyan">جديدة</span>' : ""}
+                      </div>
+                      <span class="text-[11px] text-slate-400 flex items-center gap-1 mt-0.5">
+                        <i data-lucide="clock" class="w-3 h-3"></i>
+                        ${formattedDate}
+                      </span>
                     </div>
-                `;
+                  </div>
+
+                  <!-- أزرار التحكم بالرسالة -->
+                  <div class="flex items-center gap-1" onclick="event.stopPropagation()">
+                    <button onclick="toggleStar('${msg.firebaseKey}')" title="تمييز بنجمة" class="p-2 rounded-xl hover:bg-white/10 transition-all">
+                      <i data-lucide="star" class="w-4 h-4 ${starColor}"></i>
+                    </button>
+                    <button onclick="openShareModal('${msg.firebaseKey}')" title="تصدير كبطاقة ستوري" class="p-2 rounded-xl hover:bg-white/10 text-sky-400 transition-all">
+                      <i data-lucide="image" class="w-4 h-4"></i>
+                    </button>
+                    <button onclick="copyMessageText('${msg.firebaseKey}')" title="نسخ النص" class="p-2 rounded-xl hover:bg-white/10 text-slate-300 transition-all">
+                      <i data-lucide="copy" class="w-4 h-4"></i>
+                    </button>
+                    <button onclick="requestDelete('${msg.firebaseKey}')" title="حذف الرسالة" class="p-2 rounded-xl hover:bg-rose-500/20 text-rose-400 transition-all">
+                      <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <p class="text-slate-100 text-sm sm:text-base leading-relaxed whitespace-pre-wrap pr-1">
+                  ${escapeHTML(msg.content)}
+                </p>
+              </div>
+            `;
           })
           .join("");
 
         lucide.createIcons();
       };
 
-      window.markAsRead = async function (id) {
-        const msg = messages.find((m) => m.id === id);
+      window.markAsRead = async function (firebaseKey) {
+        const msg = messages.find((m) => m.firebaseKey === firebaseKey);
         if (msg && !msg.read) {
-          msg.read = true;
-          if (useCloudFirestore && msg.docId) {
-            const docRef = doc(
-              db,
-              "artifacts",
-              appId,
-              "public",
-              "data",
-              "saraha_messages",
-              msg.docId,
-            );
-            await updateDoc(docRef, { read: true });
-          } else {
-            saveLocalMessages();
-            renderDashboard();
+          try {
+            const msgRef = ref(db, `saraha_messages/${firebaseKey}`);
+            await update(msgRef, { read: true });
+          } catch (err) {
+            console.error("Failed to mark as read:", err);
           }
         }
       };
 
-      window.toggleStar = async function (id) {
-        const msg = messages.find((m) => m.id === id);
+      window.toggleStar = async function (firebaseKey) {
+        const msg = messages.find((m) => m.firebaseKey === firebaseKey);
         if (msg) {
           const newVal = !msg.starred;
-          msg.starred = newVal;
-          if (useCloudFirestore && msg.docId) {
-            const docRef = doc(
-              db,
-              "artifacts",
-              appId,
-              "public",
-              "data",
-              "saraha_messages",
-              msg.docId,
+          try {
+            const msgRef = ref(db, `saraha_messages/${firebaseKey}`);
+            await update(msgRef, { starred: newVal });
+            showToast(
+              newVal ? "تمت إضافة الرسالة للمفضلة ⭐" : "تمت الإزالة من المفضلة"
             );
-            await updateDoc(docRef, { starred: newVal });
-          } else {
-            saveLocalMessages();
-            renderDashboard();
+          } catch (err) {
+            console.error("Failed to toggle star:", err);
           }
-          showToast(
-            newVal ? "تمت إضافة الرسالة للمفضلة ⭐" : "تمت الإزالة من المفضلة",
-          );
         }
       };
 
-      window.copyMessageText = function (id) {
-        const msg = messages.find((m) => m.id === id);
+      window.copyMessageText = function (firebaseKey) {
+        const msg = messages.find((m) => m.firebaseKey === firebaseKey);
         if (msg) {
           copyToClipboard(msg.content);
           showToast("تم نسخ نص الرسالة بنجاح");
@@ -1494,8 +1369,8 @@
       // -------------------------------------------------------------
       // 5. نافذة بطاقة المشاركة وتصدير الصورة والحذف
       // -------------------------------------------------------------
-      window.openShareModal = function (id) {
-        const msg = messages.find((m) => m.id === id);
+      window.openShareModal = function (firebaseKey) {
+        const msg = messages.find((m) => m.firebaseKey === firebaseKey);
         if (!msg) return;
         document.getElementById("shareCardText").textContent = msg.content;
         document.getElementById("shareCardModal").classList.remove("hidden");
@@ -1536,37 +1411,29 @@
         showToast("تم نسخ البطاقة النصية للمشاركة");
       };
 
-      window.requestDelete = function (id) {
-        messageIdToDelete = id;
+      window.requestDelete = function (firebaseKey) {
+        messageKeyToDelete = firebaseKey;
         document
           .getElementById("deleteConfirmModal")
           .classList.remove("hidden");
         document.getElementById("confirmDeleteBtn").onclick = async () => {
-          const target = messages.find((m) => m.id === messageIdToDelete);
-          if (useCloudFirestore && target && target.docId) {
-            const docRef = doc(
-              db,
-              "artifacts",
-              appId,
-              "public",
-              "data",
-              "saraha_messages",
-              target.docId,
-            );
-            await deleteDoc(docRef);
-          } else {
-            messages = messages.filter((m) => m.id !== messageIdToDelete);
-            saveLocalMessages();
-            renderDashboard();
+          if (messageKeyToDelete) {
+            try {
+              const msgRef = ref(db, `saraha_messages/${messageKeyToDelete}`);
+              await remove(msgRef);
+              showToast("تم حذف الرسالة نهائياً");
+            } catch (err) {
+              console.error("Failed to delete message:", err);
+              showToast("حدث خطأ أثناء الحذف");
+            }
           }
           closeDeleteModal();
-          showToast("تم حذف الرسالة نهائياً");
         };
         lucide.createIcons();
       };
 
       window.closeDeleteModal = function () {
-        messageIdToDelete = null;
+        messageKeyToDelete = null;
         document.getElementById("deleteConfirmModal").classList.add("hidden");
       };
 
@@ -1591,6 +1458,7 @@
       }
 
       function formatArabicDate(isoStr) {
+        if (!isoStr) return "الآن";
         const date = new Date(isoStr);
         return date.toLocaleDateString("ar-EG", {
           month: "short",
@@ -1610,7 +1478,7 @@
               ">": "&gt;",
               "'": "&#39;",
               '"': "&quot;",
-            })[tag],
+            })[tag]
         );
       }
     </script>
