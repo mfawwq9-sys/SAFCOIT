@@ -139,6 +139,7 @@
         animation: sendFly 0.6s ease-in forwards;
       }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   </head>
   <body class="antialiased selection:bg-brand-cyan selection:text-brand-dark">
     <!-- خلفية شبكية تقنية خفيفة -->
@@ -560,7 +561,7 @@
               <input
                 type="password"
                 id="adminPinInput"
-                placeholder="••••"
+                placeholder="**********"
                 maxlength="10"
                 class="w-full text-center text-2xl tracking-[0.5em] font-mono bg-brand-dark/90 text-white rounded-2xl py-3.5 px-4 border border-violet-500/30 focus:border-brand-cyan outline-none"
               />
@@ -569,7 +570,7 @@
               id="loginError"
               class="hidden text-xs text-rose-400 font-semibold"
             >
-              الرمز السري غير صحيح، حاول مرة أخرى.
+             غير مصرح بالدخول.
             </p>
             <div class="flex gap-2">
               <button
@@ -617,7 +618,7 @@
                 class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-brand-cyan/15 text-brand-cyan border border-brand-cyan/30 hover:bg-brand-cyan/25 text-xs font-bold transition-all"
               >
                 <i data-lucide="share" class="w-4 h-4"></i>
-                <span>نسخ رابط الإرسال العام</span>
+                <span>نسخ رابط الإرسال </span>
               </button>
               <button
                 onclick="logoutAdmin()"
@@ -720,6 +721,10 @@
                 placeholder="ابحث في محتوى الرسائل..."
                 class="w-full bg-brand-dark/80 text-white text-sm rounded-xl pr-10 pl-4 py-2 border border-white/10 focus:border-brand-cyan outline-none"
               />
+<button onclick="openPdfExportModal()" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-cyan/20 hover:bg-brand-cyan/30 text-brand-cyan border border-brand-cyan/40 text-sm font-bold transition">
+  <i data-lucide="file-text" class="w-4 h-4"></i>
+  <span>تصدير بوستر PDF</span>
+</button>
             </div>
 
             <div
@@ -761,18 +766,19 @@
         <p class="text-slate-400 font-medium">
           جميع الرسائل مشفرة وسرية تماماً • الأمانة الاجتماعية
         </p>
+        <p>الأمين الإجتماعي | م/عبدالرحمن عبدالحليم</p>
         <div
           class="mt-1.5 flex items-center justify-center gap-2 text-[11px] text-slate-600"
         >
           <span>© 2026 جمعية دبلوم علوم حاسوب وتقانة المعلومات</span>
-          <span>الأمين الإجتماعي | م/عبدالرحمن عبدالحليم</span>
+          
           <span>•</span>
           <button
             onclick="enterAdminMode()"
             class="text-slate-600 hover:text-brand-cyan transition-colors underline decoration-dotted"
             title="بوابة الأمين الاجتماعي"
           >
-            الإدارة
+            .  .
           </button>
         </div>
       </footer>
@@ -813,7 +819,7 @@
           <div
             class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-brand-cyan text-xs font-bold mb-4"
           >
-            <span>🤝 الأمانة الاجتماعية</span>
+            <span> 🤝 الأمانة الاجتماعية</span>
           </div>
 
           <div
@@ -830,7 +836,7 @@
           >
             <span>جمعية دبلوم علوم حاسوب</span>
             <span class="text-brand-cyan font-bold"
-              >صارحني • رسالة سرية 🔒</span
+              >صارحني • صدى صوتك 🔒</span
             >
           </div>
         </div>
@@ -925,7 +931,7 @@
         appId: "1:88966679382:web:4ea06347142cdddc06e4f7",
       };
 
-      const ADMIN_PIN = "2026";
+      const ADMIN_PIN = "******";
       const app = initializeApp(firebaseConfig);
       const db = getDatabase(app);
       const messagesRef = ref(db, "saraha_messages");
@@ -1481,6 +1487,152 @@
             })[tag]
         );
       }
+      function openPdfExportModal() {
+  document.getElementById('pdfExportModal').classList.remove('hidden');
+  renderSelectableMessages();
+  if (window.lucide) lucide.createIcons();
+}
+
+function closePdfExportModal() {
+  document.getElementById('pdfExportModal').classList.add('hidden');
+}
+
+// فلترة المواضيع المكررة تلقائياً لمنع التكرار
+function getFilteredMessages(messagesArray) {
+  const removeDuplicates = document.getElementById('filterDuplicatesCheckbox').checked;
+  if (!removeDuplicates) return messagesArray;
+
+  const seen = new Set();
+  return messagesArray.filter(msg => {
+    const text = (msg.text || msg.content || msg.message || '').trim().replace(/\s+/g, ' ');
+    if (!text || seen.has(text)) return false;
+    seen.add(text);
+    return true;
+  });
+}
+
+function renderSelectableMessages() {
+  const container = document.getElementById('selectableMessagesList');
+  // تأكد أن (window.messages) تطابق اسم مصفوفة الرسائل لديك في الكود
+  const rawMessages = window.messages || []; 
+  const filtered = getFilteredMessages(rawMessages);
+
+  if (filtered.length === 0) {
+    container.innerHTML = '<p class="text-center text-slate-400 text-sm py-6">لا توجد رسائل متاحة للتصدير حالياً.</p>';
+    return;
+  }
+
+  container.innerHTML = filtered.map((msg, index) => {
+    const text = msg.text || msg.content || msg.message || '';
+    const date = msg.date || msg.createdAt || 'اليوم';
+    return `
+      <label class="flex items-start gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 cursor-pointer transition">
+        <input type="checkbox" class="msg-export-checkbox accent-cyan-400 mt-1 w-4 h-4" value="${index}" data-text="${encodeURIComponent(text)}" data-date="${date}" checked>
+        <div class="flex-1 text-right">
+          <p class="text-xs text-slate-200 leading-relaxed">${text}</p>
+          <span class="text-[10px] text-slate-400 mt-1 block">${date}</span>
+        </div>
+      </label>
+    `;
+  }).join('');
+}
+
+function toggleSelectAllMessages(state) {
+  document.querySelectorAll('.msg-export-checkbox').forEach(cb => cb.checked = state);
+}
+
+function generateMessagesPosterPDF() {
+  const selectedCheckboxes = Array.from(document.querySelectorAll('.msg-export-checkbox:checked'));
+  if (selectedCheckboxes.length === 0) {
+    alert('الرجاء تحديد رسالة واحدة على الأقل للتصدير.');
+    return;
+  }
+
+  const posterContent = document.getElementById('pdfPosterContent');
+  document.getElementById('pdfPosterDate').innerText = new Date().toLocaleDateString('ar-EG');
+
+  posterContent.innerHTML = selectedCheckboxes.map((cb, idx) => {
+    const text = decodeURIComponent(cb.dataset.text);
+    return `
+      <div style="background: rgba(255,255,255,0.05); border-right: 4px solid #8b5cf6; padding: 14px 18px; border-radius: 12px;">
+        <div style="font-size: 11px; color: #22d3ee; margin-bottom: 6px; font-weight: bold;">مشاركة #${idx + 1}</div>
+        <div style="font-size: 14px; line-height: 1.6; color: #f8fafc;">${text}</div>
+      </div>
+    `;
+  }).join('');
+
+  const element = document.getElementById('pdfPosterTemplate');
+  element.parentElement.classList.remove('hidden');
+
+  const opt = {
+    margin: 0,
+    filename: `Sada-Sawtak-Poster-${new Date().toISOString().slice(0,10)}.pdf`,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#0f0a1f' },
+    jsPDF: { unit: 'px', format: [794, element.scrollHeight + 40], orientation: 'portrait' }
+  };
+
+  html2pdf().set(opt).from(element).save().then(() => {
+    element.parentElement.classList.add('hidden');
+    closePdfExportModal();
+  });
+}
     </script>
+    <!-- نافذة تصدير بوستر PDF مع الفلترة والتحديد -->
+<div id="pdfExportModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+  <div class="bg-brand-card border border-violet-500/30 rounded-3xl max-w-2xl w-full p-6 shadow-2xl max-h-[90vh] flex flex-col">
+
+    <!-- الرأس -->
+    <div class="flex items-center justify-between mb-4 border-b border-white/10 pb-3">
+      <h3 class="text-base font-bold text-white flex items-center gap-2">
+        <i data-lucide="file-down" class="w-5 h-5 text-brand-cyan"></i>
+        <span>تصدير بوستر الرسائل (PDF)</span>
+      </h3>
+      <button onclick="closePdfExportModal()" class="p-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <!-- خيارات الفلترة والتحديد السريع -->
+    <div class="flex flex-wrap items-center justify-between gap-2 mb-3 bg-white/5 p-3 rounded-2xl text-xs">
+      <label class="flex items-center gap-2 text-slate-200 cursor-pointer">
+        <input type="checkbox" id="filterDuplicatesCheckbox" checked onchange="renderSelectableMessages()" class="accent-cyan-400 w-4 h-4 rounded">
+        <span>إزالة المواضيع المكررة تلقائياً</span>
+      </label>
+      <div class="flex gap-2">
+        <button onclick="toggleSelectAllMessages(true)" class="px-2.5 py-1 rounded-lg bg-brand-cyan/20 text-brand-cyan hover:bg-brand-cyan/30">تحديد الكل</button>
+        <button onclick="toggleSelectAllMessages(false)" class="px-2.5 py-1 rounded-lg bg-white/10 text-slate-300 hover:bg-white/20">إلغاء التحديد</button>
+      </div>
+    </div>
+
+    <!-- قائمة الرسائل القابلة للتحديد -->
+    <div id="selectableMessagesList" class="overflow-y-auto space-y-2 pr-1 flex-1 mb-4 max-h-72">
+      <!-- يتم تعبئتها تلقائياً عبر الجافاسكربت -->
+    </div>
+
+    <!-- زر التصدير النهائي -->
+    <button onclick="generateMessagesPosterPDF()" class="w-full py-3 rounded-xl bg-gradient-to-r from-brand-cyan to-violet-600 text-white font-bold text-sm flex items-center justify-center gap-2 hover:opacity-90 transition">
+      <i data-lucide="download" class="w-4 h-4"></i>
+      <span>توليد وتحميل البوستر PDF</span>
+    </button>
+  </div>
+</div>
+
+<!-- قالب البوستر المخفي الذي سيتم تحويله إلى PDF -->
+<div class="hidden">
+  <div id="pdfPosterTemplate" dir="rtl" style="width: 794px; background: #0f0a1f; color: #ffffff; padding: 40px; font-family: sans-serif;">
+    <div style="border-bottom: 2px solid #22d3ee; padding-bottom: 16px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <h1 style="font-size: 24px; font-weight: bold; color: #22d3ee; margin: 0;">صدى صوتك | Sada Sawtak</h1>
+        <p style="font-size: 13px; color: #94a3b8; margin: 4px 0 0 0;">الأمانة الاجتماعية - ملخص الرسائل والاستفسارات اليومية</p>
+      </div>
+      <div id="pdfPosterDate" style="font-size: 12px; color: #cbd5e1; background: rgba(255,255,255,0.08); padding: 6px 12px; border-radius: 8px;"></div>
+    </div>
+    <div id="pdfPosterContent" style="display: flex; flex-direction: column; gap: 14px;"></div>
+    <div style="margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px; text-align: center; font-size: 11px; color: #64748b;">
+      صوتكم أمانة، وله صدى • منصة الأمانة الاجتماعية
+    </div>
+  </div>
+</div>
   </body>
 </html>
